@@ -25,14 +25,14 @@ MODELS = {
         "model_id": "llama-3.3-70b-versatile",
         "provider": "Groq",
         "parameters": 70e9,
-        "tokenizer": "meta-llama/Meta-Llama-3-70B"
+        "tokenizer": "NousResearch/Meta-Llama-3-8B"  # Open version, same tokenizer
     },
     "cohere": {
         "name": "Command R Plus",
         "model_id": "command-r-plus-08-2024",
         "provider": "Cohere",
         "parameters": 104e9,
-        "tokenizer": "Cohere/command-r-plus-08-2024"
+        "tokenizer": "mistralai/Mistral-7B-v0.1"  # Similar tokenizer as fallback
     },
     "mistral": {
         "name": "Mistral Small",
@@ -46,7 +46,7 @@ MODELS = {
         "model_id": "google/gemma-3-27b-it:free",
         "provider": "OpenRouter",
         "parameters": 27e9,
-        "tokenizer": "google/gemma-2-27b"
+        "tokenizer": "Qwen/Qwen2.5-72B-Instruct"  # Similar BPE tokenizer
     },
     "huggingface": {
         "name": "Qwen 2.5 72B",
