@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from models.database import init_db
 from routes.analyze import router as analyze_router
 from routes.history import router as history_router
+from routes.nlp import router as nlp_router
 
 app = FastAPI(
     title="AI Sustainability Analyzer",
@@ -43,3 +44,4 @@ def get_models():
 
 app.include_router(analyze_router)
 app.include_router(history_router)
+app.include_router(nlp_router)

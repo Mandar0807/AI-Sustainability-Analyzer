@@ -263,9 +263,9 @@ Expected: ~35-40% reduction
 
 **Demo Prompt 2 — Shows medium reduction (use Groq):**
 ```
-Can you please help me understand the key differences between 
-machine learning and deep learning and also explain to me when 
-we should use one approach over the other in real projects
+        Can you please help me understand the key differences between 
+        machine learning and deep learning and also explain to me when 
+        we should use one approach over the other in real projects
 ```
 Expected: ~15-25% reduction
 
