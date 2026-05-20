@@ -52,6 +52,7 @@ def call_mistral(prompt: str) -> dict:
     }
 
 def call_openrouter(prompt: str) -> dict:
+    import time
     from openai import OpenAI
     client = OpenAI(
         base_url="https://openrouter.ai/api/v1",
@@ -61,7 +62,9 @@ def call_openrouter(prompt: str) -> dict:
     fallback_models = [
         "google/gemma-3-27b-it:free",
         "meta-llama/llama-3.3-70b-instruct:free",
-        "mistralai/mistral-small-3.1-24b-instruct:free",
+        "google/gemma-3-12b-it:free",
+        "nousresearch/deephermes-3-llama-3-8b-preview:free",
+        "mistralai/devstral-small:free",
     ]
 
     last_error = None
