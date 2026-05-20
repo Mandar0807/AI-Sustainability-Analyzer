@@ -11,6 +11,8 @@ def get_connection():
 def init_db():
     conn = get_connection()
     cursor = conn.cursor()
+
+    # Existing table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS prompt_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,6 +38,49 @@ def init_db():
             co2_reduction REAL
         )
     ''')
+
+    # New dataset table for comparison + recommendation
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS comparison_dataset (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            prompt_text TEXT NOT NULL,
+            prompt_word_count INTEGER,
+            prompt_token_count INTEGER,
+            prompt_category TEXT,
+            prompt_complexity TEXT,
+            prompt_filler_ratio REAL,
+            prompt_readability_score REAL,
+            groq_tokens INTEGER,
+            groq_energy REAL,
+            groq_co2 REAL,
+            groq_response_time REAL,
+            groq_success INTEGER DEFAULT 0,
+            cohere_tokens INTEGER,
+            cohere_energy REAL,
+            cohere_co2 REAL,
+            cohere_response_time REAL,
+            cohere_success INTEGER DEFAULT 0,
+            mistral_tokens INTEGER,
+            mistral_energy REAL,
+            mistral_co2 REAL,
+            mistral_response_time REAL,
+            mistral_success INTEGER DEFAULT 0,
+            openrouter_tokens INTEGER,
+            openrouter_energy REAL,
+            openrouter_co2 REAL,
+            openrouter_response_time REAL,
+            openrouter_success INTEGER DEFAULT 0,
+            huggingface_tokens INTEGER,
+            huggingface_energy REAL,
+            huggingface_co2 REAL,
+            huggingface_response_time REAL,
+            huggingface_success INTEGER DEFAULT 0,
+            most_efficient_model TEXT,
+            least_efficient_model TEXT
+        )
+    ''')
+
     conn.commit()
     conn.close()
     print("✅ Database initialized")
