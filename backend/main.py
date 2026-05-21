@@ -5,6 +5,7 @@ from routes.analyze import router as analyze_router
 from routes.history import router as history_router
 from routes.nlp import router as nlp_router
 from routes.compare import router as compare_router
+from routes.recommend import router as recommend_router
 
 app = FastAPI(
     title="AI Sustainability Analyzer",
@@ -47,3 +48,4 @@ app.include_router(analyze_router)
 app.include_router(history_router)
 app.include_router(nlp_router)
 app.include_router(compare_router)
+app.include_router(recommend_router)
