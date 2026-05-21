@@ -39,17 +39,34 @@ def call_cohere(prompt: str) -> dict:
 def call_mistral(prompt: str) -> dict:
     from mistralai import Mistral
     client = Mistral(api_key=MISTRAL_API_KEY)
-    response = client.chat.complete(
-        model=MODELS["mistral"]["model_id"],
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=1024
-    )
-    return {
-        "text": response.choices[0].message.content,
-        "prompt_tokens": response.usage.prompt_tokens,
-        "response_tokens": response.usage.completion_tokens,
-        "total_tokens": response.usage.total_tokens
-    }
+
+    for attempt in range(2):  # Try twice (once, then retry after wait)
+        try:
+            response = client.chat.complete(
+                model=MODELS["mistral"]["model_id"],
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=1024
+            )
+            return {
+                "text": response.choices[0].message.content,
+                "prompt_tokens": response.usage.prompt_tokens,
+                "response_tokens": response.usage.completion_tokens,
+                "total_tokens": response.usage.total_tokens
+            }
+        except Exception as e:
+            err_str = str(e)
+            # 429 rate limit — wait and retry once
+            if "429" in err_str or "capacity exceeded" in err_str.lower() or "rate" in err_str.lower():
+                if attempt == 0:
+                    print(f"   Mistral rate limit hit. Waiting 15s before retry...")
+                    time.sleep(15)
+                    continue
+                raise Exception(
+                    "Mistral API rate limit exceeded (429). "
+                    "Free tier has limited requests. Please wait 1-2 minutes and try again."
+                )
+            raise  # Re-raise other errors as-is
+
 
 def call_openrouter(prompt: str) -> dict:
     import time
@@ -61,10 +78,9 @@ def call_openrouter(prompt: str) -> dict:
 
     fallback_models = [
         "google/gemma-3-27b-it:free",
-        "meta-llama/llama-3.3-70b-instruct:free",
-        "google/gemma-3-12b-it:free",
-        "nousresearch/deephermes-3-llama-3-8b-preview:free",
-        "mistralai/devstral-small:free",
+        "meta-llama/llama-3.1-8b-instruct:free",
+        "microsoft/phi-3-mini-128k-instruct:free",
+        "qwen/qwen-2.5-7b-instruct:free",
     ]
 
     last_error = None

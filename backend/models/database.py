@@ -12,15 +12,16 @@ def init_db():
     conn = get_connection()
     cursor = conn.cursor()
 
-    # Existing table
+    # Original single model analysis table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS prompt_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            model_key TEXT NOT NULL,
-            model_name TEXT NOT NULL,
+            analysis_type TEXT DEFAULT 'single',
+            model_key TEXT,
+            model_name TEXT,
             original_prompt TEXT NOT NULL,
-            optimized_prompt TEXT NOT NULL,
+            optimized_prompt TEXT DEFAULT '',
             original_prompt_tokens INTEGER,
             original_response_tokens INTEGER,
             original_total_tokens INTEGER,
@@ -35,11 +36,28 @@ def init_db():
             optimized_co2 REAL,
             token_reduction REAL,
             energy_reduction REAL,
-            co2_reduction REAL
+            co2_reduction REAL,
+            nlp_original_tokens INTEGER,
+            nlp_optimized_tokens INTEGER,
+            nlp_tokens_saved INTEGER,
+            nlp_percent_saved REAL,
+            nlp_grade TEXT,
+            nlp_efficiency_score INTEGER,
+            nlp_issues_count INTEGER,
+            nlp_rule_tokens_saved INTEGER,
+            nlp_llmlingua_tokens_saved INTEGER,
+            compare_results TEXT,
+            compare_winner TEXT,
+            compare_winner_name TEXT,
+            compare_efficiency_gap REAL,
+            compare_fastest TEXT,
+            compare_fastest_name TEXT,
+            compare_total_successful INTEGER,
+            compare_total_failed INTEGER
         )
     ''')
 
-    # New dataset table for comparison + recommendation
+    # Dataset table for recommendations
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS comparison_dataset (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -80,6 +98,36 @@ def init_db():
             least_efficient_model TEXT
         )
     ''')
+
+    # Add new columns to existing table if they dont exist
+    new_columns = [
+        ("analysis_type", "TEXT DEFAULT 'single'"),
+        ("nlp_original_tokens", "INTEGER"),
+        ("nlp_optimized_tokens", "INTEGER"),
+        ("nlp_tokens_saved", "INTEGER"),
+        ("nlp_percent_saved", "REAL"),
+        ("nlp_grade", "TEXT"),
+        ("nlp_efficiency_score", "INTEGER"),
+        ("nlp_issues_count", "INTEGER"),
+        ("nlp_rule_tokens_saved", "INTEGER"),
+        ("nlp_llmlingua_tokens_saved", "INTEGER"),
+        ("compare_results", "TEXT"),
+        ("compare_winner", "TEXT"),
+        ("compare_winner_name", "TEXT"),
+        ("compare_efficiency_gap", "REAL"),
+        ("compare_fastest", "TEXT"),
+        ("compare_fastest_name", "TEXT"),
+        ("compare_total_successful", "INTEGER"),
+        ("compare_total_failed", "INTEGER"),
+    ]
+
+    for col_name, col_type in new_columns:
+        try:
+            cursor.execute(
+                f"ALTER TABLE prompt_history ADD COLUMN {col_name} {col_type}"
+            )
+        except Exception:
+            pass  # Column already exists
 
     conn.commit()
     conn.close()
