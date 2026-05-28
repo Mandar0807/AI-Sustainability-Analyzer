@@ -120,7 +120,7 @@ Create `backend/.env`:
 GROQ_API_KEY=your_key_here
 COHERE_API_KEY=your_key_here
 MISTRAL_API_KEY=your_key_here
-OPENROUTER_API_KEY=your_key_here
+CEREBRAS_API_KEY=your_key_here
 HUGGINGFACE_API_KEY=your_key_here
 ```
 

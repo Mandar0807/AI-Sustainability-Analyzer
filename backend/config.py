@@ -9,7 +9,7 @@ load_dotenv(dotenv_path=env_path)
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 COHERE_API_KEY = os.getenv("COHERE_API_KEY")
 MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+CEREBRAS_API_KEY = os.getenv("CEREBRAS_API_KEY")
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 
 # Carbon intensity (IEA global average gCO2/kWh)
@@ -42,11 +42,11 @@ MODELS = {
         "tokenizer": "mistralai/Mistral-7B-v0.1"
     },
     "openrouter": {
-        "name": "Gemma 3 27B",
-        "model_id": "google/gemma-3-27b-it:free",
-        "provider": "OpenRouter",
-        "parameters": 27e9,
-        "tokenizer": "Qwen/Qwen2.5-72B-Instruct"  # Similar BPE tokenizer
+    "name": "GPT OSS 120B",
+    "model_id": "gpt-oss-120b",
+    "provider": "Cerebras",
+    "parameters": 120e9,
+    "tokenizer": "Qwen/Qwen2.5-72B-Instruct"  # Fallback tokenizer
     },
     "huggingface": {
         "name": "Qwen 2.5 72B",

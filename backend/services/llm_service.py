@@ -1,7 +1,7 @@
 import time
 from config import (
     GROQ_API_KEY, COHERE_API_KEY, MISTRAL_API_KEY,
-    OPENROUTER_API_KEY, HUGGINGFACE_API_KEY, MODELS
+    CEREBRAS_API_KEY, HUGGINGFACE_API_KEY, MODELS
 )
 
 def call_groq(prompt: str) -> dict:
@@ -67,42 +67,26 @@ def call_mistral(prompt: str) -> dict:
                 )
             raise  # Re-raise other errors as-is
 
-
 def call_openrouter(prompt: str) -> dict:
-    import time
     from openai import OpenAI
+
     client = OpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=OPENROUTER_API_KEY
+        base_url="https://api.cerebras.ai/v1",
+        api_key=CEREBRAS_API_KEY
     )
 
-    fallback_models = [
-        "google/gemma-3-27b-it:free",
-        "meta-llama/llama-3.1-8b-instruct:free",
-        "microsoft/phi-3-mini-128k-instruct:free",
-        "qwen/qwen-2.5-7b-instruct:free",
-    ]
+    response = client.chat.completions.create(
+        model=MODELS["openrouter"]["model_id"],
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=1024
+    )
 
-    last_error = None
-    for model_id in fallback_models:
-        try:
-            response = client.chat.completions.create(
-                model=model_id,
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=1024
-            )
-            return {
-                "text": response.choices[0].message.content,
-                "prompt_tokens": response.usage.prompt_tokens,
-                "response_tokens": response.usage.completion_tokens,
-                "total_tokens": response.usage.total_tokens
-            }
-        except Exception as e:
-            print(f"   OpenRouter model {model_id} failed, trying next...")
-            last_error = e
-            time.sleep(2)
-
-    raise Exception(f"All OpenRouter models failed. Last error: {last_error}")
+    return {
+        "text": response.choices[0].message.content,
+        "prompt_tokens": response.usage.prompt_tokens,
+        "response_tokens": response.usage.completion_tokens,
+        "total_tokens": response.usage.total_tokens
+    }
 
 def call_huggingface(prompt: str) -> dict:
     from huggingface_hub import InferenceClient
