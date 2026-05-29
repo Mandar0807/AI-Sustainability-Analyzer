@@ -6,3 +6,8 @@ mistralai
 huggingface_hub
 python-dotenv
 requests
+nltk
+torch
+transformers
+scikit-learn
+numpy
