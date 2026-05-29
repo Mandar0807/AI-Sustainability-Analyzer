@@ -1,6 +1,25 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from models.database import init_db
+import nltk
+import os
+
+def download_nltk_data():
+    nltk_dir = '/opt/render/nltk_data'
+    os.makedirs(nltk_dir, exist_ok=True)
+    packages = [
+        'stopwords', 'punkt', 'punkt_tab',
+        'wordnet', 'averaged_perceptron_tagger',
+        'averaged_perceptron_tagger_eng', 'omw-1.4'
+    ]
+    for pkg in packages:
+        try:
+            nltk.download(pkg, download_dir=nltk_dir, quiet=True)
+        except Exception:
+            pass
+
+download_nltk_data()
+
 from routes.analyze import router as analyze_router
 from routes.history import router as history_router
 from routes.nlp import router as nlp_router
@@ -16,9 +35,9 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000"
-        "https://*.vercel.app"
-        ],
+        "http://localhost:3000",       # ← comma added
+        "https://*.vercel.app",        # ← comma added
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
