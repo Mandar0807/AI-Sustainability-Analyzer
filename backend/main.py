@@ -36,7 +36,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://ai-sustainability-frontend.vercel.app",
+        "https://ai-sustainability-analyzer-q8lu.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
