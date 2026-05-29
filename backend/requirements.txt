@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+groq
+cohere
+mistralai
+huggingface_hub
+python-dotenv
+requests
